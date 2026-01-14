@@ -1,26 +1,280 @@
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { Link } from 'expo-router';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ScrollView,
+  Dimensions
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [courses, setCourses] = useState([
+    // Mock данные, потом замените API
+    {
+      id: '1',
+      title: 'React Native с нуля',
+      instructor: 'Иван Иванов',
+      price: 2990,
+      rating: 4.8,
+      students: 1245,
+      image: 'https://...',
+      category: 'Программирование'
+    },
+    // ... больше курсов
+  ]);
+
+  // Компонент карточки курса
+  const CourseCard = ({ course }) => (
+    <TouchableOpacity style={styles.courseCard}>
+      <Image source={{ uri: course.image }} style={styles.courseImage} />
+      <View style={styles.courseContent}>
+        <Text style={styles.courseTitle} numberOfLines={2}>
+          {course.title}
+        </Text>
+        <Text style={styles.courseInstructor}>{course.instructor}</Text>
+        <View style={styles.ratingContainer}>
+          <Ionicons name="star" size={16} color="#FFD700" />
+          <Text style={styles.ratingText}>{course.rating}</Text>
+          <Text style={styles.studentsText}>({course.students})</Text>
+        </View>
+        <Text style={styles.coursePrice}>{course.price} ₽</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome!</Text>
-      <Text>This app is just being made</Text>
-      <Text>just trust the process</Text>
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" />
+      
+      {/* Хедер */}
+      <View style={styles.header}>
+        {/* Логотип или название */}
+        <Text style={styles.logo}>EduShop</Text>
+        
+        {/* Правая часть хедера */}
+        <View style={styles.headerIcons}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="cart-outline" size={24} color="#333" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="person-outline" size={24} color="#333" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Поисковая строка */}
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Поиск курсов..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          clearButtonMode="while-editing"
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery('')}>
+            <Ionicons name="close-circle" size={20} color="#999" />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {/* Баннер/акция (опционально) */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bannerContainer}>
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>Скидка 30% на все курсы</Text>
+        </View>
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>Новые курсы уже доступны</Text>
+        </View>
+      </ScrollView>
+
+      {/* Категории (быстрый фильтр) */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
+        {['Все', 'Программирование', 'Дизайн', 'Маркетинг', 'Бизнес'].map((cat, index) => (
+          <TouchableOpacity key={index} style={styles.categoryChip}>
+            <Text style={styles.categoryText}>{cat}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Заголовок раздела */}
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Популярные курсы</Text>
+        <TouchableOpacity>
+          <Text style={styles.seeAll}>Смотреть все</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Список курсов */}
+      <FlatList
+        data={courses}
+        renderItem={({ item }) => <CourseCard course={item} />}
+        keyExtractor={item => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.coursesRow}
+        contentContainerStyle={styles.coursesContainer}
+        showsVerticalScrollIndicator={false}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#fff',
   },
-  title: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  logo: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#2c3e50',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconButton: {
+    padding: 8,
+    marginLeft: 8,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginVertical: 12,
+    paddingHorizontal: 12,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 10,
+    fontSize: 16,
+  },
+  bannerContainer: {
+    paddingLeft: 16,
+    marginBottom: 16,
+  },
+  banner: {
+    backgroundColor: '#4A90E2',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    marginRight: 10,
+    minWidth: 250,
+  },
+  bannerText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  categoriesContainer: {
+    paddingLeft: 16,
     marginBottom: 20,
+  },
+  categoryChip: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 10,
+  },
+  categoryText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  seeAll: {
+    color: '#4A90E2',
+    fontSize: 14,
+  },
+  coursesContainer: {
+    paddingHorizontal: 12,
+    paddingBottom: 20,
+  },
+  coursesRow: {
+    justifyContent: 'space-between',
+  },
+  courseCard: {
+    width: (Dimensions.get('window').width - 36) / 2,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  courseImage: {
+    width: '100%',
+    height: 120,
+    backgroundColor: '#ddd', // временный фон
+  },
+  courseContent: {
+    padding: 12,
+  },
+  courseTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+    height: 40,
+  },
+  courseInstructor: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 6,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  ratingText: {
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4,
+    marginRight: 8,
+  },
+  studentsText: {
+    fontSize: 12,
+    color: '#999',
+  },
+  coursePrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2c3e50',
   },
 });
