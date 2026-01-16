@@ -10,6 +10,7 @@ export default function CartScreen() {
       <Text style={styles.title}>Корзина</Text>
       <View style={styles.emptyCart}>
         <Text style={styles.emptyText}>Ваша корзина пуста</Text>
+        <Text style={styles.emptyText}>Давайте что-нибудь добавим</Text>
         <TouchableOpacity 
           style={styles.browseButton}
           onPress={() => router.push('/')}
