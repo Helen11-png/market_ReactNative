@@ -13,11 +13,12 @@ import {
   Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router'; // ← ДОБАВЬТЕ ЭТОТ ИМПОРТ
 
 export default function HomeScreen() {
+  const router = useRouter(); // ← СОЗДАЙТЕ router
   const [searchQuery, setSearchQuery] = useState('');
   const [courses, setCourses] = useState([
-    // Mock данные, потом замените API
     {
       id: '1',
       title: 'React Native с нуля',
@@ -25,15 +26,61 @@ export default function HomeScreen() {
       price: 2990,
       rating: 4.8,
       students: 1245,
-      image: 'https://...',
+      image: 'https://via.placeholder.com/300x200/4A90E2/FFFFFF?text=React+Native',
       category: 'Программирование'
     },
-    // ... больше курсов
+    {
+      id: '2',
+      title: 'Дизайн интерфейсов',
+      instructor: 'Анна Смирнова',
+      price: 3990,
+      rating: 4.9,
+      students: 856,
+      image: 'https://via.placeholder.com/300x200/50C878/FFFFFF?text=UI/UX',
+      category: 'Дизайн'
+    },
+    {
+      id: '3',
+      title: 'Маркетинг для начинающих',
+      instructor: 'Петр Иванов',
+      price: 2490,
+      rating: 4.6,
+      students: 2103,
+      image: 'https://via.placeholder.com/300x200/FF6B6B/FFFFFF?text=Marketing',
+      category: 'Маркетинг'
+    },
+    {
+      id: '4',
+      title: 'Бизнес-аналитика',
+      instructor: 'Мария Петрова',
+      price: 4590,
+      rating: 4.7,
+      students: 934,
+      image: 'https://via.placeholder.com/300x200/FFA500/FFFFFF?text=Business',
+      category: 'Бизнес'
+    },
   ]);
 
-  // Компонент карточки курса
+  // Добавьте эти функции для навигации:
+  const handleCartPress = () => {
+    router.push('/cart'); // ← Переход на корзину
+  };
+
+  const handleProfilePress = () => {
+    router.push('/profile'); // ← Переход на профиль
+  };
+
+  // Если хотите использовать навигацию через табы (из нижнего меню):
+  const handleTabNavigation = (screenName: string) => {
+    // Это переключит таб в нижнем меню
+    router.replace(`/(tabs)/${screenName}`);
+  };
+
   const CourseCard = ({ course }) => (
-    <TouchableOpacity style={styles.courseCard}>
+    <TouchableOpacity 
+      style={styles.courseCard}
+      onPress={() => router.push(`/course/${course.id}`)} // ← Навигация на детали курса
+    >
       <Image source={{ uri: course.image }} style={styles.courseImage} />
       <View style={styles.courseContent}>
         <Text style={styles.courseTitle} numberOfLines={2}>
@@ -56,21 +103,33 @@ export default function HomeScreen() {
       
       {/* Хедер */}
       <View style={styles.header}>
-        {/* Логотип или название */}
         <Text style={styles.logo}>EduShop</Text>
         
-        {/* Правая часть хедера */}
+        {/* Правая часть хедера - ТЕПЕРЬ С НАВИГАЦИЕЙ */}
         <View style={styles.headerIcons}>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPress={handleCartPress} // ← ДОБАВЬТЕ onPress
+            // Или используйте handleTabNavigation('cart') для переключения табов
+          >
             <Ionicons name="cart-outline" size={24} color="#333" />
+            {/* Можно добавить бейдж с количеством товаров */}
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>2</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
+          
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPress={handleProfilePress} // ← ДОБАВЬТЕ onPress
+            // Или используйте handleTabNavigation('profile') для переключения табов
+          >
             <Ionicons name="person-outline" size={24} color="#333" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Поисковая строка */}
+      {/* Остальной код без изменений */}
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
         <TextInput
@@ -87,7 +146,6 @@ export default function HomeScreen() {
         )}
       </View>
 
-      {/* Баннер/акция (опционально) */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bannerContainer}>
         <View style={styles.banner}>
           <Text style={styles.bannerText}>Скидка 30% на все курсы</Text>
@@ -97,7 +155,6 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* Категории (быстрый фильтр) */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesContainer}>
         {['Все', 'Программирование', 'Дизайн', 'Маркетинг', 'Бизнес'].map((cat, index) => (
           <TouchableOpacity key={index} style={styles.categoryChip}>
@@ -106,15 +163,13 @@ export default function HomeScreen() {
         ))}
       </ScrollView>
 
-      {/* Заголовок раздела */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Популярные курсы</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/explore')}>
           <Text style={styles.seeAll}>Смотреть все</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Список курсов */}
       <FlatList
         data={courses}
         renderItem={({ item }) => <CourseCard course={item} />}
@@ -154,6 +209,24 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 8,
     marginLeft: 8,
+    position: 'relative',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#FF3B30',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  cartBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -241,7 +314,6 @@ const styles = StyleSheet.create({
   courseImage: {
     width: '100%',
     height: 120,
-    backgroundColor: '#ddd', // временный фон
   },
   courseContent: {
     padding: 12,
