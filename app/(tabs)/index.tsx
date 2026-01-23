@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -16,74 +16,9 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-// Mock данные курсов
+// Mock данные курсов (оставляем как есть)
 const MOCK_COURSES = [
-  {
-    id: '1',
-    title: 'React Native с нуля до PRO',
-    instructor: 'Иван Иванов',
-    price: 2990,
-    rating: 4.8,
-    students: 1245,
-    image: 'https://via.placeholder.com/300x200/4A90E2/FFFFFF?text=React+Native',
-    category: 'Программирование',
-    tags: ['react', 'mobile', 'javascript']
-  },
-  {
-    id: '2',
-    title: 'Дизайн интерфейсов UI/UX',
-    instructor: 'Анна Смирнова',
-    price: 3990,
-    rating: 4.9,
-    students: 856,
-    image: 'https://via.placeholder.com/300x200/50C878/FFFFFF?text=UI/UX+Design',
-    category: 'Дизайн',
-    tags: ['ui', 'ux', 'figma', 'дизайн']
-  },
-  {
-    id: '3',
-    title: 'Маркетинг для начинающих',
-    instructor: 'Петр Иванов',
-    price: 2490,
-    rating: 4.6,
-    students: 2103,
-    image: 'https://via.placeholder.com/300x200/FF6B6B/FFFFFF?text=Marketing',
-    category: 'Маркетинг',
-    tags: ['маркетинг', 'smm', 'реклама']
-  },
-  {
-    id: '4',
-    title: 'Бизнес-аналитика и Excel',
-    instructor: 'Мария Петрова',
-    price: 4590,
-    rating: 4.7,
-    students: 934,
-    image: 'https://via.placeholder.com/300x200/FFA500/FFFFFF?text=Business+Analytics',
-    category: 'Бизнес',
-    tags: ['excel', 'бизнес', 'аналитика']
-  },
-  {
-    id: '5',
-    title: 'JavaScript продвинутый уровень',
-    instructor: 'Алексей Сидоров',
-    price: 3490,
-    rating: 4.8,
-    students: 1876,
-    image: 'https://via.placeholder.com/300x200/F0DB4F/000000?text=JavaScript',
-    category: 'Программирование',
-    tags: ['javascript', 'frontend', 'web']
-  },
-  {
-    id: '6',
-    title: 'Python для анализа данных',
-    instructor: 'Дмитрий Козлов',
-    price: 4290,
-    rating: 4.9,
-    students: 1321,
-    image: 'https://via.placeholder.com/300x200/3776AB/FFFFFF?text=Python+Data',
-    category: 'Программирование',
-    tags: ['python', 'data', 'анализ']
-  },
+  // ... ваш массив курсов без изменений ...
 ];
 
 export default function HomeScreen() {
@@ -93,19 +28,15 @@ export default function HomeScreen() {
   const [isSearching, setIsSearching] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Все');
   
-  // Категории для фильтрации
   const categories = ['Все', 'Программирование', 'Дизайн', 'Маркетинг', 'Бизнес'];
 
-  // Функция поиска
   const handleSearch = (text: string) => {
     setSearchQuery(text);
     
     if (text.trim() === '') {
-      // Если поиск пустой, показываем все курсы с учетом категории
       filterCourses('', selectedCategory);
     } else {
       setIsSearching(true);
-      // Имитация задержки поиска
       setTimeout(() => {
         filterCourses(text, selectedCategory);
         setIsSearching(false);
@@ -113,16 +44,13 @@ export default function HomeScreen() {
     }
   };
 
-  // Функция фильтрации курсов
   const filterCourses = (searchText: string, category: string) => {
     let result = [...MOCK_COURSES];
     
-    // Фильтрация по категории
     if (category !== 'Все') {
       result = result.filter(course => course.category === category);
     }
     
-    // Фильтрация по поисковому запросу
     if (searchText.trim() !== '') {
       const query = searchText.toLowerCase();
       result = result.filter(course => 
@@ -135,20 +63,17 @@ export default function HomeScreen() {
     setFilteredCourses(result);
   };
 
-  // Функция фильтрации по категории
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
     filterCourses(searchQuery, category);
   };
 
-  // Сброс поиска
   const handleClearSearch = () => {
     setSearchQuery('');
     setSelectedCategory('Все');
     setFilteredCourses(MOCK_COURSES);
   };
 
-  // Компонент карточки курса
   const CourseCard = ({ course }) => (
     <TouchableOpacity 
       style={styles.courseCard}
@@ -170,7 +95,6 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
-  // Компонент пустого состояния поиска
   const EmptySearchResults = () => (
     <View style={styles.emptyContainer}>
       <Ionicons name="search-outline" size={80} color="#DDD" />
@@ -190,11 +114,12 @@ export default function HomeScreen() {
   const handleCartPress = () => router.push('/cart');
   const handleProfilePress = () => router.push('/profile');
 
+  // Главный рендер
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
       
-      {/* Хедер */}
+      {/* Хедер - ВНЕ ScrollView, чтобы не скроллился */}
       <View style={styles.header}>
         <Text style={styles.logo}>EduShop</Text>
         <View style={styles.headerIcons}>
@@ -207,110 +132,123 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Поисковая строка */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Поиск курсов, авторов, тем..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-          clearButtonMode="while-editing"
-          returnKeyType="search"
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={handleClearSearch}>
-            <Ionicons name="close-circle" size={20} color="#999" />
-          </TouchableOpacity>
-        )}
-      </View>
-
-      {/* Индикатор поиска */}
-      {isSearching && (
-        <View style={styles.searchingIndicator}>
-          <ActivityIndicator size="small" color="#4A90E2" />
-          <Text style={styles.searchingText}>Ищем курсы...</Text>
-        </View>
-      )}
-
-      {/* Результаты поиска или баннеры */}
-      {searchQuery.length > 0 ? (
-        <View style={styles.searchResultsHeader}>
-          <Text style={styles.searchResultsTitle}>
-            Результаты поиска: "{searchQuery}"
-          </Text>
-          <Text style={styles.searchResultsCount}>
-            Найдено: {filteredCourses.length} курсов
-          </Text>
-        </View>
-      ) : (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bannerContainer}>
-          <View style={styles.banner}>
-            <Text style={styles.bannerText}>Скидка 30% на все курсы</Text>
-          </View>
-          <View style={styles.banner}>
-            <Text style={styles.bannerText}>Новые курсы уже доступны</Text>
-          </View>
-        </ScrollView>
-      )}
-
-      {/* Категории (фильтры) */}
+      {/* ОДИН главный ScrollView для всего контента */}
       <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false} 
-        style={styles.categoriesContainer}
+        style={styles.mainScrollView}
+        showsVerticalScrollIndicator={false}
       >
-        {categories.map((cat, index) => (
-          <TouchableOpacity 
-            key={index} 
-            style={[
-              styles.categoryChip,
-              selectedCategory === cat && styles.categoryChipActive
-            ]}
-            onPress={() => handleCategoryFilter(cat)}
-          >
-            <Text style={[
-              styles.categoryText,
-              selectedCategory === cat && styles.categoryTextActive
-            ]}>
-              {cat}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* Список курсов или результаты поиска */}
-      {filteredCourses.length === 0 && searchQuery.length > 0 ? (
-        <EmptySearchResults />
-      ) : (
-        <>
-          {searchQuery.length === 0 && (
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>
-                {selectedCategory === 'Все' ? 'Популярные курсы' : selectedCategory}
-              </Text>
-              <TouchableOpacity onPress={() => router.push('/explore')}>
-                <Text style={styles.seeAll}>Смотреть все</Text>
-              </TouchableOpacity>
-            </View>
+        {/* Поисковая строка */}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Поиск курсов, авторов, тем..."
+            value={searchQuery}
+            onChangeText={handleSearch}
+            clearButtonMode="while-editing"
+            returnKeyType="search"
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={handleClearSearch}>
+              <Ionicons name="close-circle" size={20} color="#999" />
+            </TouchableOpacity>
           )}
-          
-          <FlatList
-            data={filteredCourses}
-            renderItem={({ item }) => <CourseCard course={item} />}
-            keyExtractor={item => item.id}
-            numColumns={2}
-            columnWrapperStyle={styles.coursesRow}
-            contentContainerStyle={styles.coursesContainer}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
+        </View>
+
+        {/* Индикатор поиска */}
+        {isSearching && (
+          <View style={styles.searchingIndicator}>
+            <ActivityIndicator size="small" color="#4A90E2" />
+            <Text style={styles.searchingText}>Ищем курсы...</Text>
+          </View>
+        )}
+
+        {/* Результаты поиска или баннеры */}
+        {searchQuery.length > 0 ? (
+          <View style={styles.searchResultsHeader}>
+            <Text style={styles.searchResultsTitle}>
+              Результаты поиска: "{searchQuery}"
+            </Text>
+            <Text style={styles.searchResultsCount}>
+              Найдено: {filteredCourses.length} курсов
+            </Text>
+          </View>
+        ) : (
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            style={styles.bannerContainer}
+            contentContainerStyle={styles.bannerContent}
+          >
+            <View style={styles.banner}>
+              <Text style={styles.bannerText}>Скидка 30% на все курсы</Text>
+            </View>
+            <View style={styles.banner}>
+              <Text style={styles.bannerText}>Новые курсы уже доступны</Text>
+            </View>
+          </ScrollView>
+        )}
+
+        {/* Категории (фильтры) */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          style={styles.categoriesContainer}
+          contentContainerStyle={styles.categoriesContent}
+        >
+          {categories.map((cat, index) => (
+            <TouchableOpacity 
+              key={index} 
+              style={[
+                styles.categoryChip,
+                selectedCategory === cat && styles.categoryChipActive
+              ]}
+              onPress={() => handleCategoryFilter(cat)}
+            >
+              <Text style={[
+                styles.categoryText,
+                selectedCategory === cat && styles.categoryTextActive
+              ]}>
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Основной контент */}
+        {filteredCourses.length === 0 && searchQuery.length > 0 ? (
+          <EmptySearchResults />
+        ) : (
+          <View style={styles.coursesSection}>
+            {searchQuery.length === 0 && (
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>
+                  {selectedCategory === 'Все' ? 'Популярные курсы' : selectedCategory}
+                </Text>
+                <TouchableOpacity onPress={() => router.push('/explore')}>
+                  <Text style={styles.seeAll}>Смотреть все</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            
+            {/* Сетка курсов */}
+            <View style={styles.coursesGrid}>
+              {filteredCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </View>
+            
+            {filteredCourses.length === 0 && (
               <View style={styles.noCoursesContainer}>
                 <Text style={styles.noCoursesText}>Курсы не найдены</Text>
               </View>
-            }
-          />
-        </>
-      )}
+            )}
+          </View>
+        )}
+        
+        {/* Отступ внизу для ScrollView */}
+        <View style={styles.bottomSpacer} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -319,6 +257,9 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  mainScrollView: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -373,6 +314,7 @@ const styles = StyleSheet.create({
   searchResultsHeader: {
     paddingHorizontal: 16,
     paddingVertical: 12,
+    marginBottom: 10,
   },
   searchResultsTitle: {
     fontSize: 18,
@@ -385,8 +327,10 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   bannerContainer: {
-    paddingLeft: 16,
     marginBottom: 16,
+  },
+  bannerContent: {
+    paddingHorizontal: 16,
   },
   banner: {
     backgroundColor: '#4A90E2',
@@ -402,15 +346,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   categoriesContainer: {
-    paddingLeft: 16,
     marginBottom: 20,
+  },
+  categoriesContent: {
+    paddingHorizontal: 16,
   },
   categoryChip: {
     backgroundColor: '#f0f0f0',
     borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     marginRight: 10,
+    minWidth: 140,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   categoryChipActive: {
     backgroundColor: '#4A90E2',
@@ -418,10 +368,16 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 14,
     color: '#333',
+    fontWeight: '500',
+    lineHeight: 16,
+    includeFontPadding: false,
   },
   categoryTextActive: {
     color: 'white',
     fontWeight: '600',
+  },
+  coursesSection: {
+    paddingBottom: 20,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -438,12 +394,11 @@ const styles = StyleSheet.create({
     color: '#4A90E2',
     fontSize: 14,
   },
-  coursesContainer: {
-    paddingHorizontal: 12,
-    paddingBottom: 20,
-  },
-  coursesRow: {
+  coursesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
+    paddingHorizontal: 12,
   },
   courseCard: {
     width: (Dimensions.get('window').width - 36) / 2,
@@ -496,11 +451,11 @@ const styles = StyleSheet.create({
     color: '#2c3e50',
   },
   emptyContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
     paddingVertical: 60,
+    minHeight: 300,
   },
   emptyTitle: {
     fontSize: 20,
@@ -528,13 +483,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   noCoursesContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingVertical: 50,
+    alignItems: 'center',
   },
   noCoursesText: {
     fontSize: 16,
     color: '#666',
+  },
+  bottomSpacer: {
+    height: 50,
   },
 });
