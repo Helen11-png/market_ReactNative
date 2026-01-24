@@ -1,23 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useCart } from '@/contexts/CartContext';
 
 export default function CartScreen() {
-  const router = useRouter();
-
+  const { items } = useCart(); // ← ПОЛУЧАЕМ товары
+  
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Корзина</Text>
-      <View style={styles.emptyCart}>
-        <Text style={styles.emptyText}>Ваша корзина пуста</Text>
-        <Text style={styles.emptyText}>Давайте что-нибудь добавим</Text>
-        <TouchableOpacity 
-          style={styles.browseButton}
-          onPress={() => router.push('/')}
-        >
-          <Text style={styles.browseButtonText}>Найти курсы</Text>
-        </TouchableOpacity>
-      </View>
+    <View>
+      <Text>В корзине: {items.length} товаров</Text>
+      {items.map(item => (
+        <Text key={item.id}>{item.title} - {item.price}₽</Text>
+      ))}
     </View>
   );
 }
