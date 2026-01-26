@@ -4,6 +4,8 @@ type Course = {
   id: string;
   title: string;
   price: number;
+  image?: string;
+  instructor?: string;
   // другие поля
 };
 
