@@ -17,35 +17,31 @@ import { useCart } from '@/contexts/CartContext';
 export default function CartScreen() {
   const router = useRouter();
   const { items, removeFromCart, clearCart } = useCart();
-  
-  // Вычисляем общую сумму
   const total = items.reduce((sum, item) => sum + item.price, 0);
   
-  // Оформление заказа
   const handleCheckout = () => {
     if (items.length === 0) {
-      Alert.alert('Корзина пуста', 'Добавьте курсы в корзину для оформления');
+      Alert.alert('Cart is empty', 'Add courses to the shopping cart to enroll');
       return;
     }
     
     Alert.alert(
-      'Оформление заказа',
-      `Вы уверены, что хотите купить ${items.length} курсов на сумму ${total}₽?`,
+      'Checkout',
+      `Are you sure you want to purchase ${items.length} courses for a total of ${total}₽?`,
       [
-        { text: 'Отмена', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         { 
-          text: 'Оформить', 
+          text: 'Checkout', 
           style: 'default',
           onPress: () => {
-            Alert.alert('Заказ оформлен!', 'Курсы добавлены в ваш профиль');
+            Alert.alert('Order placed!', 'Courses have been added to your profile');
             clearCart();
           }
         }
       ]
     );
   };
-  
-  // Если корзина пуста
+
   if (items.length === 0) {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -54,16 +50,16 @@ export default function CartScreen() {
           <View style={styles.emptyIconContainer}>
             <Ionicons name="cart-outline" size={100} color="#E0E0E0" />
           </View>
-          <Text style={styles.emptyTitle}>Ваша корзина пуста</Text>
+          <Text style={styles.emptyTitle}>Your cart is empty</Text>
           <Text style={styles.emptyText}>
-            Добавьте курсы из каталога, чтобы начать обучение
+            Add courses from the catalog to start learning
           </Text>
           <TouchableOpacity 
             style={styles.browseButton}
             onPress={() => router.push('/')}
           >
             <Ionicons name="book-outline" size={20} color="white" style={styles.browseIcon} />
-            <Text style={styles.browseButtonText}>Перейти к курсам</Text>
+            <Text style={styles.browseButtonText}>Browse Courses</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -74,19 +70,19 @@ export default function CartScreen() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
       
-      {/* Шапка */}
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Корзина</Text>
+        <Text style={styles.title}>Shopping Cart</Text>
         <TouchableOpacity 
           style={styles.clearButton}
           onPress={() => {
             if (items.length > 0) {
               Alert.alert(
-                'Очистить корзину',
-                'Вы уверены, что хотите удалить все товары?',
+                'Clear Cart',
+                'Are you sure you want to remove all items?',
                 [
-                  { text: 'Отмена', style: 'cancel' },
-                  { text: 'Очистить', style: 'destructive', onPress: clearCart }
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Clear', style: 'destructive', onPress: clearCart }
                 ]
               );
             }
@@ -96,7 +92,7 @@ export default function CartScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Список товаров */}
+      {/* Cart Items */}
       <ScrollView 
         style={styles.itemsContainer}
         showsVerticalScrollIndicator={false}
@@ -130,15 +126,15 @@ export default function CartScreen() {
         ))}
       </ScrollView>
 
-      {/* Итоговая панель */}
+      {/* Footer Summary */}
       <View style={styles.footer}>
         <View style={styles.summary}>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Товаров:</Text>
-            <Text style={styles.summaryValue}>{items.length} шт.</Text>
+            <Text style={styles.summaryLabel}>Items:</Text>
+            <Text style={styles.summaryValue}>{items.length}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Итого:</Text>
+            <Text style={styles.summaryLabel}>Total:</Text>
             <Text style={styles.totalPrice}>{total} ₽</Text>
           </View>
         </View>
@@ -148,7 +144,7 @@ export default function CartScreen() {
           onPress={handleCheckout}
         >
           <Ionicons name="card-outline" size={22} color="white" />
-          <Text style={styles.checkoutButtonText}>Оформить заказ</Text>
+          <Text style={styles.checkoutButtonText}>Proceed to Checkout</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -156,7 +152,7 @@ export default function CartScreen() {
           onPress={() => router.push('/')}
         >
           <Text style={styles.continueShoppingText}>
-            <Ionicons name="arrow-back" size={16} /> Продолжить покупки
+            <Ionicons name="arrow-back" size={16} /> Continue Shopping
           </Text>
         </TouchableOpacity>
       </View>

@@ -60,7 +60,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="cart"
         options={{
-          title: 'Корзина',
+          title: 'Cart',
           tabBarIcon: ({ color, focused }) => (
             <IconSymbol 
               size={28} 
@@ -74,7 +74,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Профиль',
+          title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
             <IconSymbol 
               size={28} 

@@ -11,10 +11,10 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-// Временные данные пользователя (потом заменим на контекст)
+// Temporary user data (will be replaced with context)
 const mockUser = {
   id: '1',
-  name: 'Алексей Петров',
+  name: 'Alexey Petrov',
   email: 'alexey@example.com',
   avatar: 'https://i.pravatar.cc/300',
   phone: '+7 (999) 123-45-67',
@@ -31,51 +31,51 @@ export default function ProfileScreen() {
   const menuItems = [
     {
       icon: 'book-outline',
-      name: 'Мои курсы',
+      name: 'My Courses',
       count: user.coursesCount,
       screen: '/profile/courses',
     },
     {
       icon: 'receipt-outline',
-      name: 'Мои заказы',
+      name: 'My Orders',
       count: 3,
       screen: '/profile/orders',
     },
     {
       icon: 'heart-outline',
-      name: 'Избранное',
+      name: 'Favorites',
       count: 7,
       screen: '/profile/favorites',
     },
     {
       icon: 'notifications-outline',
-      name: 'Уведомления',
+      name: 'Notifications',
       screen: '/profile/notifications',
     },
     {
       icon: 'settings-outline',
-      name: 'Настройки',
+      name: 'Settings',
       screen: '/profile/settings',
     },
     {
       icon: 'help-circle-outline',
-      name: 'Помощь',
+      name: 'Help',
       screen: '/help',
     },
   ];
 
   const handleLogout = () => {
     Alert.alert(
-      'Выход',
-      'Вы уверены, что хотите выйти?',
+      'Logout',
+      'Are you sure you want to logout?',
       [
-        { text: 'Отмена', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Выйти',
+          text: 'Logout',
           style: 'destructive',
           onPress: () => {
             setIsLoggedIn(false);
-            // Здесь будет очистка данных пользователя
+            // User data will be cleared here
           },
         },
       ]
@@ -90,21 +90,21 @@ export default function ProfileScreen() {
     return (
       <View style={styles.notAuthContainer}>
         <Ionicons name="person-circle-outline" size={100} color="#CCCCCC" />
-        <Text style={styles.notAuthTitle}>Вы не авторизованы</Text>
+        <Text style={styles.notAuthTitle}>You are not logged in</Text>
         <Text style={styles.notAuthText}>
-          Войдите в аккаунт, чтобы получить доступ к курсам
+          Sign in to your account to access courses
         </Text>
         <TouchableOpacity
           style={styles.loginButton}
           onPress={() => router.push('/(auth)/login')}
         >
-          <Text style={styles.loginButtonText}>Войти</Text>
+          <Text style={styles.loginButtonText}>Sign In</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.registerButton}
           onPress={() => router.push('/(auth)/register')}
         >
-          <Text style={styles.registerButtonText}>Зарегистрироваться</Text>
+          <Text style={styles.registerButtonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     );
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Шапка профиля */}
+      {/* Profile Header */}
       <View style={styles.header}>
         <View style={styles.avatarContainer}>
           <Image source={{ uri: user.avatar }} style={styles.avatar} />
@@ -129,31 +129,31 @@ export default function ProfileScreen() {
         
         <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
           <Ionicons name="create-outline" size={18} color="#4A90E2" />
-          <Text style={styles.editButtonText}>Редактировать профиль</Text>
+          <Text style={styles.editButtonText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Статистика */}
+      {/* Statistics */}
       <View style={styles.statsContainer}>
         <View style={styles.statItem}>
           <Text style={styles.statNumber}>{user.coursesCount}</Text>
-          <Text style={styles.statLabel}>Курсов</Text>
+          <Text style={styles.statLabel}>Courses</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Text style={styles.statNumber}>{user.completedCourses}</Text>
-          <Text style={styles.statLabel}>Завершено</Text>
+          <Text style={styles.statLabel}>Completed</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statItem}>
           <Text style={styles.statNumber}>85%</Text>
-          <Text style={styles.statLabel}>Прогресс</Text>
+          <Text style={styles.statLabel}>Progress</Text>
         </View>
       </View>
 
-      {/* Меню профиля */}
+      {/* Profile Menu */}
       <View style={styles.menuContainer}>
-        <Text style={styles.sectionTitle}>Мой аккаунт</Text>
+        <Text style={styles.sectionTitle}>My Account</Text>
         
         {menuItems.map((item, index) => (
           <TouchableOpacity
@@ -178,13 +178,13 @@ export default function ProfileScreen() {
         ))}
       </View>
 
-      {/* Кнопка выхода */}
+      {/* Logout Button */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
-        <Text style={styles.logoutButtonText}>Выйти из аккаунта</Text>
+        <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
 
-      {/* Версия приложения */}
+      {/* App Version */}
       <View style={styles.versionContainer}>
         <Text style={styles.versionText}>EduShop v1.0.0</Text>
       </View>
